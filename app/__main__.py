@@ -25,6 +25,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="Destination file path",
     )
     
+    parser.add_argument(
+        "--prefix", "-p",
+        type=str,
+        required=False,
+    )
+    
     input_list_group = parser.add_argument_group('input_list')
     
     input_list_group.add_argument(
