@@ -49,7 +49,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     
     args = parser.parse_args(argv)
     
+    from . import app
+    from .app import Args
+    
+    args = Args(**vars(args))
+    app.main(args)
+    
     return 0
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

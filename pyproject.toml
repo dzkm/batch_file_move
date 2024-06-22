@@ -2,14 +2,25 @@
 requires = ["setuptools>=42.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "batch_file_move"
+description = "Move files in batch"
+readme = "README.md"
+license = {file = "LICENSE"}
+version = "0.0.1"
+requires-python = ">=3.10"
+authors = [
+    {name = "Djonathan de Souza", email = "djonathansouza@pm.me"},
+]
+
 [tool.pytest.ini_options]
-addopts = "--cov=ajusta_bling"
+addopts = "--cov=src"
 testpaths = [
     "tests",
 ]
 
 [tool.mypy]
-mypy_path = "ajusta_bling"
+mypy_path = "src"
 check_untyped_defs = true
 disallow_any_generics = true
 ignore_missing_imports = true
