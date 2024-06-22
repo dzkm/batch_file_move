@@ -1,13 +1,14 @@
 from bfm.common import LIST_TYPE
+import easygui
 
 def ask_source() -> str:
-    source = input("Enter source file: ")
+    source = easygui.diropenbox("Select source folder")
     if source:
         return source
     raise ValueError("Source file is invalid.")
 
 def ask_destination() -> str | bool:
-    destination = input("Enter destination file: ")
+    destination = easygui.diropenbox("Select destination folder")
     if destination:
         return destination
     raise ValueError("Destination file is invalid.")
@@ -30,7 +31,7 @@ def ask_kind_list() -> int | bool:
     
     kind_list = int(kind_list.strip())
     
-    list_type_enum = set([x.value[0] for x in LIST_TYPE]) # Hack. Python 3.12 has Enum.__contains__
+    list_type_enum = set([x.value[0] for x in LIST_TYPE]) # Hack. Python 3.12 has Enum.__contains__, which allows for for-loops directly
     
     if kind_list in list_type_enum:
         return kind_list
@@ -47,7 +48,7 @@ def ask_raw_list() -> list[str] | bool:
     raise ValueError("Invalid raw list. Please check your list again")
 
 def ask_txt_file() -> str | bool:
-    txt_file = input("Enter txt file: ")
+    txt_file = easygui.fileopenbox("Select txt file", filetypes=["*.txt"])
     if txt_file:
         return txt_file
     
