@@ -1,4 +1,5 @@
 from common import Args
+import menu
 
 def main(args: Args):
-    print(args)
+    menu.menu(args)
