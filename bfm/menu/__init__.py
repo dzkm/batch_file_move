@@ -24,7 +24,7 @@ def menu(args: Args):
                 args.txt = txt_file_parser(_call_if_none(args.txt, prompt.ask_txt_file))
             elif kind_list == LIST_TYPE.INPUT.value[0]:
                 args.raw = _call_if_none(args.raw, prompt.ask_raw_list)
- 
+
             finished = True
             print(args)
         except Exception as e:

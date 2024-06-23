@@ -13,11 +13,11 @@ def ask_destination() -> str | bool:
         return destination
     raise ValueError("Destination file is invalid.")
 
-def ask_prefix() -> str | bool:
+def ask_prefix() -> str | None:
     prefix = gui.ask_prefix()
-    if prefix:
-        return prefix
-    raise ValueError("Prefix is invalid.")
+    if not prefix:
+        return ""
+    return prefix
 
 def ask_kind_list() -> int | bool:
     kind_list = gui.ask_kind_list()

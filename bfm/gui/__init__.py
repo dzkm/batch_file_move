@@ -8,7 +8,6 @@ _root = tkinter.Tk()
 _root.withdraw()
 
 def _close_when_empty(response: any) -> any:
-    print(response)
     if(isinstance(response, tuple) and response):
         return response
     
@@ -17,10 +16,11 @@ def _close_when_empty(response: any) -> any:
     
     if(response):
         return response
-     
+    
     if messagebox.askokcancel("Quit", "You canceled your operation. Do you want to quit?"):
         _root.destroy()
         raise SystemExit(0)
+    return False
 
 def openfiledialog(**kwargs) -> str | bool: 
     return _close_when_empty(filedialog.askopenfilename(**kwargs))
