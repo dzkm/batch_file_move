@@ -17,6 +17,11 @@ def menu(args: Args):
         try:
             args.source = _call_if_none(args.source, prompt.ask_source)
             args.destination = _call_if_none(args.destination, prompt.ask_destination)
+            
+            if(args.source == args.destination):
+                show_error_dialog("Source and destination cannot be the same.")
+                args.destination = None
+            
             args.prefix = _call_if_none(args.prefix, prompt.ask_prefix)
             kind_list = prompt.ask_kind_list()
             
