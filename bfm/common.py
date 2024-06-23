@@ -10,5 +10,5 @@ class Args:
     raw: list[str]
 
 class LIST_TYPE(Enum):
-    TXT_FILE = 0, ".txt"
-    INPUT = 1, "input"
+    TXT_FILE = 1, ".txt"
+    INPUT = 2, "input"
