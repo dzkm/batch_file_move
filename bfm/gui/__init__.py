@@ -7,20 +7,20 @@ from bfm.common import LIST_TYPE
 _root = tkinter.Tk()
 _root.withdraw()
 
-def _close_when_empty(response: any) -> any:
-    if(isinstance(response, tuple) and response):
-        return response
-    
-    if(isinstance(response, str) and response.strip() != ""):
-        return response
-    
-    if(response):
-        return response
-    
-    if messagebox.askokcancel("Quit", "You canceled your operation. Do you want to quit?"):
-        _root.destroy()
-        raise SystemExit(0)
-    return False
+def _close_when_empty(response: any) -> any: 
+    while True:  
+        if(isinstance(response, tuple) and response):
+            return response
+        
+        if(isinstance(response, str) and response.strip() != ""):
+            return response
+        
+        if(response):
+            return response
+        
+        if messagebox.askokcancel("Quit", "You canceled your operation. Do you want to quit?"):
+            _root.destroy()
+            raise SystemExit(0)
 
 def openfiledialog(**kwargs) -> str | bool: 
     return _close_when_empty(filedialog.askopenfilename(**kwargs))
