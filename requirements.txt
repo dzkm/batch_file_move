@@ -1,3 +1,7 @@
 about-time==4.2.1
 alive-progress==3.1.5
+altgraph==0.17.4
 grapheme==0.6.0
+packaging==24.1
+pyinstaller==6.8.0
+pyinstaller-hooks-contrib==2024.7

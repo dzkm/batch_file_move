@@ -49,8 +49,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     
     args = parser.parse_args(argv)
     
-    from . import app
-    from .app import Args
+    from bfm import app
+    from app import Args
     
     args = Args(**vars(args))
     app.main(args)
