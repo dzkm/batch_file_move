@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Generator
+
 def txt_file_parser(file_path: str) -> list[str]:
     with open(file_path, "r") as file:
         file_lines: list[str] | None = [line.strip() for line in file.readlines() if line.strip() != ""]
@@ -7,7 +8,7 @@ def txt_file_parser(file_path: str) -> list[str]:
             raise ValueError("File is empty.")
         return file_lines
     
-def file_to_move_generator(source_path: str, prefix: str, id_list: list[str]) -> Generator[str, None, None]:
+def get_files_to_move(source_path: str, prefix: str, id_list: list[str]) -> Generator[str, None, None]:
     source_path: Path = Path(source_path)
     id_set = set(id_list)
     
@@ -18,13 +19,15 @@ def file_to_move_generator(source_path: str, prefix: str, id_list: list[str]) ->
         
         file_id = file.stem[len(prefix):]
         if file_id in id_set:
-            yield str(file)
+            yield(file)
 
-def move_file(file: Path, destination: str) -> dict[str, bool]:
+def move_file(file: Path, destination: str) -> list[bool, str]:
     destination = Path(destination)
     try:
         file.rename(destination / file.name)
         print(f"Moved {file.name} to {destination}")
-        return {"success": True, "message": "Moved %s to %s" % (file.name, destination)}
+        return [True, "Moved %s to %s" % (file.name, destination)]
     except FileExistsError as e:
-        return {"success": False, "message": f"File {file.name} already exists in {destination}"}
+        return [False, "File %s already exists in %s" % (file.name, destination)]
+    except Exception as e:
+        return [False, "Unknown error on file %s" % (file.name)]

@@ -1,5 +1,7 @@
 from common import Args
 import menu
+import migration
 
 def main(args: Args):
-    menu.menu(args)
+    menu_args = menu.menu(args)
+    print(migration.start_migration(args))

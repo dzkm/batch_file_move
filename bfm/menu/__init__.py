@@ -10,7 +10,7 @@ def _call_if_none(arg: any, func: FunctionType, *fargs: any):
         return func(*fargs)
     return arg 
 
-def menu(args: Args):
+def menu(args: Args) -> Args:
     finished = False
     
     while(not finished):
@@ -32,7 +32,7 @@ def menu(args: Args):
                 args.raw = _call_if_none(args.raw, prompt.ask_raw_list)
 
             finished = True
-            print(args)
+            return args
         except Exception as e:
             show_error_dialog(msg = e)
             continue    
