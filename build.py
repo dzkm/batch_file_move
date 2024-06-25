@@ -4,11 +4,12 @@ PyInstaller.__main__.run([
     'bfm/__main__.py',
     '--name', 'bfm',
     '--onedir',
-    '--windowed',
+    '--console',
     '--clean',
     '--specpath', "build/spec",
     '--distpath', "build/dist",
     '--workpath', "build/temp",
     '--contents-directory', "resources",
+    '--collect-all', 'grapheme',
 ])
     
