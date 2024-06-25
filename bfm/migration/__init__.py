@@ -2,6 +2,7 @@ from pathlib import Path
 import bfm.file_handler as fm
 from bfm.common import Args
 from alive_progress import alive_bar
+from time import sleep
 
 def start_migration(args: Args) -> list[Path] | None:
     id_list = args.txt or args.raw
@@ -19,6 +20,7 @@ def start_migration(args: Args) -> list[Path] | None:
             print(move_file_result[1])
             if move_file_result[0] == False:
                 failed.append(file)
+            sleep(0.1) # Just so the user gets more feedback, can be removed if needed
             continue
     
     return failed if len(failed) > 0 else None
