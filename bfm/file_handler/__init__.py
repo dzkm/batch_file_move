@@ -27,6 +27,15 @@ def get_files_to_move(source_path: str, prefix: str, id_list: list[str]) -> set[
     [print("O id %s não foi encontrado" % id) for id in id_set if id not in found_ids]
     return files_got if len(files_got) > 0 else None
         
+def copy_file(file: Path, destination: str) -> list[bool, str]:
+    destination = Path(destination)
+    try:
+        file.copy(destination / file.name)
+        return [True, "Copied %s to %s/" % (file.name, destination)]
+    except FileExistsError as e:
+        return [False, "File %s already exists in %s" % (file.name, destination)]
+    except Exception as e:
+        return [False, "Unknown error on file %s" % (file.name)]
 
 def move_file(file: Path, destination: str) -> list[bool, str]:
     destination = Path(destination)
