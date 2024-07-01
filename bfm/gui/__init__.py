@@ -1,7 +1,6 @@
 import tkinter
-from . import containers
 from . import styles
-from . import widgets
+from . import windows
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import simpledialog
@@ -9,23 +8,10 @@ from bfm.common import LIST_TYPE
 
 
 def draw_gui():
-    _root = tkinter.Tk()
-    _root.title("Batch File Move")
+    main_window = windows.main.draw()
+    styles.load_styles(main_window)
     
-    styles.load_styles(_root)
-    
-    main = containers._main(_root)
-    
-    widgets.draw(main)
-    
-    _root.update_idletasks()
-    _root.resizable(False, False) 
-    _root.minsize(
-        _root.winfo_width(),
-        _root.winfo_height()
-    )
-    
-    _root.mainloop()
+    main_window.mainloop()
 
 def _close_when_empty(response: any) -> any: 
     while True:  

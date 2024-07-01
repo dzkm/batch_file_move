@@ -1,5 +1,6 @@
 from tkinter import ttk
 import bfm.gui.styles as style
+import bfm.menu.prompt as prompt
 import tkinter
 
 def _folder_selector(root: tkinter.Tk, label: str) -> tkinter.StringVar:
@@ -9,7 +10,7 @@ def _folder_selector(root: tkinter.Tk, label: str) -> tkinter.StringVar:
     
     ttk.Label(frame, text=label).pack(side=tkinter.LEFT)
     ttk.Entry(frame, textvariable=path).pack(side=tkinter.LEFT)
-    ttk.Button(frame, text="Selecionar", command=lambda: print("...")).pack(side=tkinter.LEFT, padx=10)
+    ttk.Button(frame, text="Selecionar", command=lambda: path.set(prompt.ask_source())).pack(side=tkinter.LEFT, padx=10)
     frame.pack(pady=5)
     return path
 
@@ -20,7 +21,7 @@ def _file_selector(root: tkinter.Tk, label: str) -> tkinter.StringVar:
     
     ttk.Label(frame, text=label).pack(side=tkinter.LEFT)
     ttk.Entry(frame, textvariable=path).pack(side=tkinter.LEFT)
-    ttk.Button(frame, text="Selecionar", command=lambda: print("...")).pack(side=tkinter.LEFT, padx=10)
+    ttk.Button(frame, text="Selecionar", command=lambda: path.set(prompt.ask_txt_file())).pack(side=tkinter.LEFT, padx=10)
     frame.pack(pady=5)
     return path
 
