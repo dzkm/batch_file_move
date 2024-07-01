@@ -1,4 +1,5 @@
 from tkinter import ttk
+import bfm.gui.styles as style
 import tkinter
 
 def example_lable(root: tkinter.Tk, **kwargs):
@@ -12,7 +13,7 @@ def _button(root: tkinter.Tk, text: str, command: callable, **kwargs) -> ttk.But
         root,
         text=text,
         command=command,
-        style='Button.Static.TButton'
+        style='Button.Leave.TButton'
     )
     return button
 
@@ -32,12 +33,12 @@ def _textbox(root: tkinter.Tk, **kwargs) -> ttk.Entry:
 
 def _folder_selector(root: tkinter.Tk, label: str) -> ttk.Frame:
     frame = ttk.Frame(root)
-    _label(frame, label).pack(side=tkinter.LEFT)
-    _textbox(frame).pack(side=tkinter.LEFT)
-    button = _button(frame, "...", lambda: print("..."))
-    button.bind("<Enter>", lambda e: button.config(style='Button.Hover.TButton', cursor="hand2"))
-    button.bind("<Leave>", lambda e: button.config(style='Button.Static.TButton', cursor="arrow"))
-    button.pack(side=tkinter.RIGHT, padx=5)
+    
+    path = tkinter.StringVar()
+    
+    ttk.Label(frame, text=label).pack(side=tkinter.LEFT)
+    ttk.Entry(frame, textvariable=path).pack(side=tkinter.LEFT)
+    ttk.Button(frame, text="Selecionar", command=lambda: print("...")).pack(side=tkinter.LEFT, padx=10)
     return frame
 
 
@@ -45,12 +46,12 @@ def draw(root: tkinter.Tk):
     origin_folder_selector = _folder_selector(root, "Pasta de origem")
     dest_folder_selector = _folder_selector(root, "Pasta de destino")
     
-    op_frame = ttk.Labelframe(root, text="Operação", style="Labelframe.TLabelframe")
+    op_frame = ttk.Labelframe(root, text="Operação", labelanchor="n")
     operation_type = tkinter.IntVar()
     op_frame_radio_1 = ttk.Radiobutton(op_frame, text="Mover", value=0, variable=operation_type)
     op_frame_radio_2 = ttk.Radiobutton(op_frame, text="Copiar", value=1, variable=operation_type)
     
-    list_frame = ttk.Labelframe(root, text="Tipo da Lista", style="Labelframe.TLabelframe")
+    list_frame = ttk.Labelframe(root, text="Tipo da Lista", labelanchor="n")
     list_type = tkinter.IntVar()
     list_frame_radio_1 = ttk.Radiobutton(list_frame, text="Arquivo de texto", value=0, variable=list_type)
     list_frame_radio_2 = ttk.Radiobutton(list_frame, text="Lista separada por virgula", value=1, variable=list_type)
@@ -60,10 +61,10 @@ def draw(root: tkinter.Tk):
     ttk.Separator(master=root, orient="horizontal").pack(fill='x', pady=15)
     op_frame_radio_1.pack()
     op_frame_radio_2.pack()
-    op_frame.pack(pady=5, fill='x')
+    op_frame.pack(pady=5, side=tkinter.TOP)
     list_frame_radio_1.pack()
     list_frame_radio_2.pack()
-    list_frame.pack(pady=5, fill='x')
-    _button(root, "Mover", lambda: print("Mover")).pack(ipady=5, fill='x')
+    list_frame.pack(pady=5, side=tkinter.TOP)
+    _button(root, "Mover", lambda: print(list_type.get(), operation_type.get())).pack(ipady=5, fill='x')
     
     
