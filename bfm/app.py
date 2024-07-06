@@ -4,6 +4,7 @@ import migration
 import gui
 from tkinter import messagebox
 
+
 def main(args: Args):
     gui.draw_gui()
     raise SystemExit(0)

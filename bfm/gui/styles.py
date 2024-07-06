@@ -14,7 +14,9 @@ def load_styles(root: tkinter.Tk):
     style.theme_use("clam")
     style.configure("TFrame", background=CATPPUCCIN_BASE)
 
-    style.configure("Main.TFrame", background=CATPPUCCIN_BASE, padding=10, relief="flat")
+    style.configure(
+        "Main.TFrame", background=CATPPUCCIN_BASE, padding=10, relief="flat"
+    )
 
     style.configure(
         "TLabel",
@@ -23,16 +25,17 @@ def load_styles(root: tkinter.Tk):
         padding=3,
         relief="flat",
     )
-    style.configure("TButton", 
-                    padding=3, 
-                    relief="flat", 
-                    foreground=CATPPUCCIN_TEXT, 
-                    background=CATPPUCCIN_MANTLE
-                    )
+    style.configure(
+        "TButton",
+        padding=3,
+        relief="flat",
+        foreground=CATPPUCCIN_TEXT,
+        background=CATPPUCCIN_MANTLE,
+    )
     style.map(
         "TButton",
         foreground=[
-            ("pressed", CATPPUCCIN_TEXT), 
+            ("pressed", CATPPUCCIN_TEXT),
             ("active", CATPPUCCIN_ACCENT),
         ],
         background=[
@@ -58,7 +61,8 @@ def load_styles(root: tkinter.Tk):
         background=[
             ("pressed", "!disabled", CATPPUCCIN_ACCENT),
             ("active", CATPPUCCIN_SURFACE),
-        ],)
+        ],
+    )
     style.configure(
         "TLabelframe",
         background=CATPPUCCIN_BASE,
@@ -66,7 +70,7 @@ def load_styles(root: tkinter.Tk):
         relief="flat",
         highlightforeground=CATPPUCCIN_ACCENT,
         highlightbackground=CATPPUCCIN_MANTLE,
-        padding=10, 
+        padding=10,
     )
     style.configure(
         "TLabelframe.Label",
