@@ -8,18 +8,12 @@ def draw():
     window.title("Batch File Move")
     window.resizable(False, False)
 
-    frame = containers._main(window)
+    frame: ttk.Frame = containers._main(window)
 
-    folder = widgets._folder_selector(frame, "Pasta")
-    file = widgets._file_selector(frame, "Arquivo")
+    folder_frame, folder_value = widgets._folder_selector(frame, "Pasta")
     prefix = widgets._prefix_input(frame)
     operation_type = widgets._frame_operation_type(frame)
-
-    input_type = widgets._frame_input_type(frame)
-    if input_type.get() == 0:
-        input_list = widgets._file_selector(frame, "Arquivo")
-    else:
-        input_list = widgets._list_input(frame)
+    input_type, text_file, id_list = widgets._frame_input_type(frame)
 
     ttk.Button(frame, text="Executar", command=lambda: print("...")).pack(
         fill=tkinter.X, ipady=10

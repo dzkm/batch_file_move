@@ -46,11 +46,11 @@ def ask_raw_list() -> list[str] | bool:
     raise ValueError("Invalid raw list. Please check your list again")
 
 
-def ask_txt_file() -> str | bool:
+def ask_txt_file() -> str:
     txt_file = gui.openfiledialog(
         title="Select txt file", filetypes=[("Text files", "*.txt")]
     )
-    if txt_file:
-        return txt_file
+    if txt_file is not False:
+        return str(txt_file)
 
     raise ValueError("Invalid txt file. Please check your file again.")

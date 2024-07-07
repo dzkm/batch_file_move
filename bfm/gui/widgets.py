@@ -1,10 +1,11 @@
 from tkinter import ttk
-import bfm.gui.styles as style
 import bfm.menu.prompt as prompt
 import tkinter
 
 
-def _folder_selector(root: tkinter.Tk, label: str) -> tkinter.StringVar:
+def _folder_selector(
+    root: ttk.Widget | tkinter.Frame | tkinter.Tk, label: str
+) -> tuple[ttk.Frame, tkinter.StringVar]:
     frame = ttk.Frame(root)
 
     path = tkinter.StringVar()
@@ -15,10 +16,10 @@ def _folder_selector(root: tkinter.Tk, label: str) -> tkinter.StringVar:
         frame, text="Selecionar", command=lambda: path.set(prompt.ask_source())
     ).pack(side=tkinter.LEFT, padx=10)
     frame.pack(pady=5)
-    return path
+    return (frame, path)
 
 
-def _file_selector(root: tkinter.Tk, label: str) -> tkinter.StringVar:
+def _file_selector(root: ttk.Widget, label: str) -> tuple[ttk.Frame, tkinter.StringVar]:
     frame = ttk.Frame(root)
 
     path = tkinter.StringVar()
@@ -29,10 +30,10 @@ def _file_selector(root: tkinter.Tk, label: str) -> tkinter.StringVar:
         frame, text="Selecionar", command=lambda: path.set(prompt.ask_txt_file())
     ).pack(side=tkinter.LEFT, padx=10)
     frame.pack(pady=5)
-    return path
+    return (frame, path)
 
 
-def _prefix_input(root: tkinter.Tk) -> tkinter.StringVar:
+def _prefix_input(root: tkinter.Tk | ttk.Widget) -> tkinter.StringVar:
     frame = ttk.Frame(root)
 
     prefix = tkinter.StringVar()
@@ -43,21 +44,21 @@ def _prefix_input(root: tkinter.Tk) -> tkinter.StringVar:
     return prefix
 
 
-def _list_input(root: tkinter.Tk) -> tkinter.StringVar:
+def _list_input(root: ttk.Widget) -> tuple[ttk.Frame, tkinter.StringVar]:
     frame = ttk.Frame(root)
 
-    list = tkinter.StringVar()
+    list_input = tkinter.StringVar()
 
     ttk.Label(frame, text="Lista").pack(side=tkinter.LEFT)
-    ttk.Entry(frame, textvariable=list).pack(side=tkinter.LEFT)
+    ttk.Entry(frame, textvariable=list_input).pack(side=tkinter.LEFT)
     ttk.Button(frame, text="Selecionar", command=lambda: print("...")).pack(
         side=tkinter.LEFT, padx=10
     )
     frame.pack()
-    return list
+    return (frame, list_input)
 
 
-def _frame_operation_type(root: tkinter.Tk) -> tkinter.IntVar:
+def _frame_operation_type(root: tkinter.Tk | ttk.Frame) -> tkinter.IntVar:
     labelframe = ttk.Labelframe(master=root, text="Operação", labelanchor="n")
 
     operation_type = tkinter.IntVar()
@@ -72,24 +73,62 @@ def _frame_operation_type(root: tkinter.Tk) -> tkinter.IntVar:
     return operation_type
 
 
-def _frame_input_type(root: tkinter.Tk) -> tkinter.IntVar:
+def __frame_input_type_change_type(
+    value: tkinter.IntVar,
+    file_selector_widget: ttk.Widget,
+    list_input_widget: ttk.Widget,
+):
+    print("bap")
+    if value.get() == 0:
+        file_selector_widget.pack()
+        list_input_widget.pack_forget()
+    elif value.get() == 1:
+        file_selector_widget.pack_forget()
+        list_input_widget.pack()
+
+
+def _frame_input_type(
+    root: tkinter.Tk | ttk.Frame,
+) -> tuple[tkinter.IntVar, tkinter.StringVar, tkinter.StringVar]:
     labelframe = ttk.Labelframe(master=root, text="Tipo da Lista", labelanchor="n")
+    input_frame = ttk.Frame(master=root)
+
+    file_selector_frame, file_selector_value = _file_selector(
+        input_frame, "Arquivo de texto"
+    )
+    comma_separated_frame, comma_separated_value = _list_input(input_frame)
+
+    file_selector_frame.pack_forget()
+    comma_separated_frame.pack_forget()
 
     list_type = tkinter.IntVar()
 
     ttk.Radiobutton(
-        labelframe, text="Arquivo de texto", value=0, variable=list_type
+        labelframe,
+        text="Arquivo de texto",
+        value=0,
+        variable=list_type,
+        command=lambda: __frame_input_type_change_type(
+            list_type, file_selector_frame, comma_separated_frame
+        ),
     ).pack(side=tkinter.LEFT)
     ttk.Radiobutton(
-        labelframe, text="Lista separada por virgula", value=1, variable=list_type
+        labelframe,
+        text="Lista separada por virgula",
+        value=1,
+        variable=list_type,
+        command=lambda: __frame_input_type_change_type(
+            list_type, file_selector_frame, comma_separated_frame
+        ),
     ).pack(side=tkinter.LEFT)
     labelframe.pack()
-    return list_type
+    input_frame.pack()
+    return (list_type, file_selector_value, comma_separated_value)
 
 
 def draw(root: tkinter.Tk):
-    origin_folder = _folder_selector(root, "Pasta de origem")
-    dest_folder = _folder_selector(root, "Pasta de destino")
+    origin_folder = _folder_selector(root, "Pasta de origem").pack()
+    dest_folder = _folder_selector(root, "Pasta de destino").pack()
     ttk.Separator(master=root, orient="horizontal").pack(fill="x", pady=15)
     list_type = _frame_input_type(root)
     operation_type = _frame_operation_type(root)
