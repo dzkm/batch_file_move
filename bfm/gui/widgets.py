@@ -11,7 +11,7 @@ def _folder_selector(
     path = tkinter.StringVar()
 
     ttk.Label(frame, text=label).pack(side=tkinter.LEFT)
-    ttk.Entry(frame, textvariable=path).pack(side=tkinter.LEFT)
+    ttk.Entry(frame, textvariable=path).pack(side=tkinter.LEFT, fill=tkinter.X)
     ttk.Button(
         frame, text="Selecionar", command=lambda: path.set(prompt.ask_source())
     ).pack(side=tkinter.LEFT, padx=10)
@@ -39,7 +39,7 @@ def _prefix_input(root: tkinter.Tk | ttk.Widget) -> tkinter.StringVar:
     prefix = tkinter.StringVar()
 
     ttk.Label(frame, text="Prefixo").pack(side=tkinter.LEFT)
-    ttk.Entry(frame, textvariable=prefix).pack(side=tkinter.LEFT)
+    ttk.Entry(frame, textvariable=prefix).pack(side=tkinter.RIGHT, fill=tkinter.X)
     frame.pack()
     return prefix
 
@@ -50,10 +50,7 @@ def _list_input(root: ttk.Widget) -> tuple[ttk.Frame, tkinter.StringVar]:
     list_input = tkinter.StringVar()
 
     ttk.Label(frame, text="Lista").pack(side=tkinter.LEFT)
-    ttk.Entry(frame, textvariable=list_input).pack(side=tkinter.LEFT)
-    ttk.Button(frame, text="Selecionar", command=lambda: print("...")).pack(
-        side=tkinter.LEFT, padx=10
-    )
+    ttk.Entry(frame, textvariable=list_input).pack(side=tkinter.LEFT, fill=tkinter.X)
     frame.pack()
     return (frame, list_input)
 
@@ -78,13 +75,12 @@ def __frame_input_type_change_type(
     file_selector_widget: ttk.Widget,
     list_input_widget: ttk.Widget,
 ):
-    print("bap")
     if value.get() == 0:
-        file_selector_widget.pack()
+        file_selector_widget.pack(pady=5, side=tkinter.TOP)
         list_input_widget.pack_forget()
     elif value.get() == 1:
         file_selector_widget.pack_forget()
-        list_input_widget.pack()
+        list_input_widget.pack(pady=5, side=tkinter.TOP)
 
 
 def _frame_input_type(
@@ -98,7 +94,7 @@ def _frame_input_type(
     )
     comma_separated_frame, comma_separated_value = _list_input(input_frame)
 
-    file_selector_frame.pack_forget()
+    file_selector_frame.pack(pady=5, side=tkinter.TOP)
     comma_separated_frame.pack_forget()
 
     list_type = tkinter.IntVar()

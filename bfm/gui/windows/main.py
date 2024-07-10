@@ -1,4 +1,4 @@
-from bfm.gui import widgets, containers
+from bfm.gui import styles, widgets, containers
 import tkinter
 from tkinter import ttk
 
@@ -21,5 +21,6 @@ def draw():
     frame.pack()
 
     window.update_idletasks()
-    window.minsize(window.winfo_width(), window.winfo_height())
+    window.configure(background=styles.CATPPUCCIN_BASE)
+    window.minsize(window.winfo_width() + 100, window.winfo_height() + 100)
     return window
