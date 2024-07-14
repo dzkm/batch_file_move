@@ -6,7 +6,7 @@ import FreeSimpleGUI as sg
 IS_GUI_MODE = True
 
 
-def main(args: Args):
+def main(args: Args) -> int:
     global IS_GUI_MODE
 
     # Checks if any argument has been passed to the program.
@@ -25,6 +25,7 @@ def main(args: Args):
             "Migração concluída com sucesso.",
             title="Migração",
         )
+        return 0
 
     if type(migration_result) is list:
         print("Migration failed for the following files:")
@@ -35,3 +36,4 @@ def main(args: Args):
         "Houve erros durante a migração. Verifique o console para mais informações.",
         title="Migração",
     )
+    return 1

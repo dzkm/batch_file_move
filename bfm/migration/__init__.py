@@ -23,7 +23,7 @@ def cli_migration(
         for file in files_to_move:
             bar()
             move_file_result = migrate_file(file, destination, copy)
-            sleep(0.1)  # Just so the user gets more feedback, can be removed if needed
+            sleep(3)  # Just so the user gets more feedback, can be removed if needed
             if not move_file_result[0]:
                 failed.append(move_file_result[1])
                 continue
@@ -32,7 +32,9 @@ def cli_migration(
     return success, failed
 
 
-def gui_migration(files_to_move: set[Path], destination: str, copy: bool = False):
+def gui_migration(
+    files_to_move: set[Path], destination: str, copy: bool = False
+) -> tuple[list[str], list[str]]:
     window = sg.Window(
         "Migração de arquivos",
         layout=[
@@ -43,24 +45,40 @@ def gui_migration(files_to_move: set[Path], destination: str, copy: bool = False
                 )
             ],
             [sg.Button("Interromper")],
+            [
+                sg.Multiline(
+                    size=(50, 10), key="output", disabled=True, echo_stdout_stderr=True
+                )
+            ],
         ],
     )
 
     progressbar = window["progress"]
 
+    success = []
+    failed = []
+    total_files = len(files_to_move)
+    current_file = 1
     for file in files_to_move:
         event, values = window.read(timeout=100)
-        if event == "Cancel":
+        if event == "Interromper":
             cancel_yes_no = sg.popup_yes_no(
                 "Deseja realmente cancelar a migração?", title="Cancelar migração"
             )
             if cancel_yes_no == "yes":
                 break
+        current_file += 1
+        progressbar.UpdateBar(current_file, total_files)
         move_file_result = migrate_file(file, destination, copy)
-        print(move_file_result[1])
-        progressbar.UpdateBar(progressbar.TKProgressBar["value"] + 1)
+        if not move_file_result[0]:
+            print("Falha ao mover %s\n" % move_file_result[1])
+            failed.append(move_file_result[1])
+        else:
+            print("Movido com sucesso %s\n" % move_file_result[1])
+            success.append(move_file_result[1])
         sleep(0.1)
         continue
+    return success, failed
 
 
 def start_migration(args: Args, is_gui: bool) -> list[str] | bool:
