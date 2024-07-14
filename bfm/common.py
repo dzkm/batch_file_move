@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from argparse import FileType
 from enum import Enum
 
 
@@ -8,7 +7,7 @@ class Args:
     source: str
     destination: str
     prefix: str
-    txt: FileType
+    txt: str
     raw: list[str]
 
 

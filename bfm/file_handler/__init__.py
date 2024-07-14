@@ -1,4 +1,5 @@
 from pathlib import Path
+from shutil import copy2
 
 
 def txt_file_parser(file_path: str) -> list[str]:
@@ -23,7 +24,7 @@ def get_files_to_move(
         if not file.is_file():
             continue
 
-        file_id = file.stem[len(prefix) :]
+        file_id = file.stem[len(prefix):]
         if file_id in id_set:
             found_ids.add(file_id)
             files_got.add(file)
@@ -32,23 +33,25 @@ def get_files_to_move(
     return files_got if len(files_got) > 0 else None
 
 
-def copy_file(file: Path, destination: str) -> list[bool, str]:
-    destination = Path(destination)
+def copy_file(file: Path, destination: str) -> tuple[bool, str]:
+    destination_parsed = Path(destination)
     try:
-        file.copy(destination / file.name)
-        return [True, "Copied %s to %s/" % (file.name, destination)]
-    except FileExistsError as e:
-        return [False, "File %s already exists in %s" % (file.name, destination)]
-    except Exception as e:
-        return [False, "Unknown error on file %s" % (file.name)]
+        copy2(
+            file, destination_parsed / file.name
+        )  # Use shutil, because mypy can't find the copy method in Path
+        return (True, "Copied %s to %s/" % (file.name, destination))
+    except FileExistsError:
+        return (False, "File %s already exists in %s" % (file.name, destination))
+    except Exception:
+        return (False, "Unknown error on file %s" % (file.name))
 
 
-def move_file(file: Path, destination: str) -> list[bool, str]:
-    destination = Path(destination)
+def move_file(file: Path, destination: str) -> tuple[bool, str]:
+    destination_parsed = Path(destination)
     try:
-        file.rename(destination / file.name)
-        return [True, "Moved %s to %s/" % (file.name, destination)]
-    except FileExistsError as e:
-        return [False, "File %s already exists in %s" % (file.name, destination)]
-    except Exception as e:
-        return [False, "Unknown error on file %s" % (file.name)]
+        file.rename(destination_parsed / file.name)
+        return (True, "Moved %s to %s/" % (file.name, destination))
+    except FileExistsError:
+        return (False, "File %s already exists in %s" % (file.name, destination))
+    except Exception:
+        return (False, "Unknown error on file %s" % (file.name))
