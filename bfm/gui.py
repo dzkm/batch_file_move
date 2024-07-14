@@ -58,6 +58,7 @@ text_file_input_frame = [
                 [sg.Input(key="TXT_INPUT", enable_events=True)],
                 [
                     sg.FileBrowse(
+                        button_text="Procurar",
                         file_types=(("Text Files", "*.txt"),),
                         initial_folder=USER_HOME_PATH,
                         key="BROWSER_INPUT_TXT",
@@ -103,15 +104,13 @@ input_type_frame = [
             default=True,
             enable_events=True,
             key="INPUT_TYPE_TXT",
-        )
-    ],
-    [
+        ),
         sg.Radio(
             "Lista separada por virgula",
             "INPUT_TYPE",
             enable_events=True,
             key="INPUT_TYPE_COMMA",
-        )
+        ),
     ],
 ]
 
@@ -121,9 +120,9 @@ op_type_frame = [
     [
         sg.Radio(
             "Mover", "OP_TYPE", default=True, enable_events=True, key="OP_TYPE_MOVE"
-        )
+        ),
+        sg.Radio("Copiar", "OP_TYPE", enable_events=True, key="OP_TYPE_COPY"),
     ],
-    [sg.Radio("Copiar", "OP_TYPE", enable_events=True, key="OP_TYPE_COPY")],
 ]
 
 layout = [
@@ -141,17 +140,26 @@ layout = [
     [sg.Frame("Tipo de Entrada", input_type_frame)],
     text_file_input_frame,
     comma_list_input_frame,
-    [sg.Button("OK")],
+    [sg.Button("OK"), sg.Button("Sair")],
 ]
 
-window = sg.Window("Batch File Mode", layout)
+window = sg.Window("Batch File Mode", layout, disable_close=True)
 
 
 def draw():
     while True:
         event, values = window.read(timeout=1000)
-        if event == sg.WIN_CLOSED:
-            break
+        if event == sg.WINDOW_CLOSED:
+            window.close()
+            exit()
+        if event == "Sair":
+            result = sg.popup_yes_no(
+                "Deseja realmente sair?", title="Sair", keep_on_top=True
+            )
+            if result == "Yes":
+                window.close()
+                exit()
+            continue
 
         if event == "__TIMEOUT__":
             if values["INPUT_FOLDER"] != "":
@@ -202,6 +210,7 @@ def draw():
             if values["INPUT_TYPE_COMMA"] and not values["COMMA_LIST_INPUT"]:
                 sg.popup_ok("Lista está vazia", title="Erro")
                 continue
+
             return Args(
                 source=values["INPUT_FOLDER"],
                 destination=values["OUTPUT_FOLDER"],
@@ -209,5 +218,3 @@ def draw():
                 txt=values["TXT_INPUT"],
                 raw=values["COMMA_LIST_INPUT"].split(","),
             )
-
-        print("\nEvent: %s\nValues:%s" % (event, values))
