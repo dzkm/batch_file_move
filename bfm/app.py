@@ -1,7 +1,7 @@
 from common import Args
 import gui
 import migration
-from tkinter import messagebox
+import FreeSimpleGUI as sg
 
 IS_GUI_MODE = True
 
@@ -18,11 +18,20 @@ def main(args: Args):
     if IS_GUI_MODE:
         args = gui.draw()
 
-    raise SystemExit(0)
-    menu_args = menu.menu(args)
-    migration_result = migration.start_migration(menu_args)
-    if migration_result:
+    migration_result = migration.start_migration(args, IS_GUI_MODE)
+
+    if migration_result is True:
+        sg.popup_ok(
+            "Migração concluída com sucesso.",
+            title="Migração",
+        )
+
+    if type(migration_result) is list:
         print("Migration failed for the following files:")
         for x in migration_result:
             print(x)
-    messagebox.showinfo("Success", "Migration completed successfully.")
+
+    sg.popup_ok(
+        "Houve erros durante a migração. Verifique o console para mais informações.",
+        title="Migração",
+    )
