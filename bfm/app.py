@@ -9,9 +9,10 @@ IS_GUI_MODE = True
 def main(args: Args):
     global IS_GUI_MODE
 
+    # Checks if any argument has been passed to the program.
     for key, value in vars(args).items():
         if value is not None:
-            IS_GUI_MODE = False
+            IS_GUI_MODE = False  # If any argument, disable GUI and makes user use CLI.
             break
 
     if IS_GUI_MODE:
