@@ -1,6 +1,4 @@
 from pathlib import Path
-from typing import Generator
-from alive_progress import alive_bar
 
 
 def txt_file_parser(file_path: str) -> list[str]:
@@ -16,12 +14,12 @@ def txt_file_parser(file_path: str) -> list[str]:
 def get_files_to_move(
     source_path: str, prefix: str, id_list: list[str]
 ) -> set[Path] | None:
-    source_path: Path = Path(source_path)
+    source_path_parsed: Path = Path(source_path)
     id_set = set(id_list)
     found_ids = set()
     files_got = set()
 
-    for file in source_path.glob("%s*" % prefix):
+    for file in source_path_parsed.glob("%s*" % prefix):
         if not file.is_file():
             continue
 
