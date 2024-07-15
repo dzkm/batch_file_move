@@ -1,5 +1,6 @@
 from pathlib import Path
-from shutil import copy2
+import shutil
+import os
 
 
 def txt_file_parser(file_path: str) -> list[str]:
@@ -36,10 +37,12 @@ def get_files_to_move(
 def copy_file(file: Path, destination: str) -> tuple[bool, str]:
     destination_parsed = Path(destination)
     try:
-        copy2(
+        shutil.copy2(
             file, destination_parsed / file.name
         )  # Use shutil, because mypy can't find the copy method in Path
-        return (True, "Copied %s to %s/" % (file.name, destination))
+        if os.path.exists(destination_parsed / file.name):
+            return (True, "Copied %s to %s/" % (file.name, destination))
+        return (False, "Failed to copy %s to %s/" % (file.name, destination))
     except FileExistsError:
         return (False, "File %s already exists in %s" % (file.name, destination))
     except Exception:
@@ -49,8 +52,10 @@ def copy_file(file: Path, destination: str) -> tuple[bool, str]:
 def move_file(file: Path, destination: str) -> tuple[bool, str]:
     destination_parsed = Path(destination)
     try:
-        file.rename(destination_parsed / file.name)
-        return (True, "Moved %s to %s/" % (file.name, destination))
+        shutil.move(file, destination_parsed / file.name)
+        if os.path.exists(destination_parsed / file.name):
+            return (True, "Moved %s to %s/" % (file.name, destination))
+        return (False, "Failed to move %s to %s/" % (file.name, destination))
     except FileExistsError:
         return (False, "File %s already exists in %s" % (file.name, destination))
     except Exception:

@@ -3,33 +3,32 @@ import os
 import bfm.file_handler as fm
 from bfm.common import Args
 from alive_progress import alive_bar
-from time import sleep
 import FreeSimpleGUI as sg
 
 
-def migrate_file(file: Path, destination: str, copy: bool = False) -> tuple[bool, str]:
+def migrate_file(file: Path, destination: str, copy: bool = False) -> bool:
     if copy:
-        return fm.copy_file(file, destination)
-
-    return fm.move_file(file, destination)
+        status, message = fm.copy_file(file, destination)
+    else:
+        status, message = fm.move_file(file, destination)
+    print(message)
+    return status
 
 
 def cli_migration(
     files_to_move: set[Path], destination: str, copy: bool = False
 ) -> tuple[list[str], list[str]]:
-    success = []
-    failed = []
+    success_list: list[str] = []
+    failed_list: list[str] = []
     with alive_bar((len(files_to_move))) as bar:
         for file in files_to_move:
             bar()
-            move_file_result = migrate_file(file, destination, copy)
-            sleep(3)  # Just so the user gets more feedback, can be removed if needed
-            if not move_file_result[0]:
-                failed.append(move_file_result[1])
+            migration_success = migrate_file(file, destination, copy)
+            if migration_success:
+                success_list.append(file.name)
                 continue
-            success.append(move_file_result[1])
-            continue
-    return success, failed
+            failed_list.append(file.name)
+    return success_list, failed_list
 
 
 def gui_migration(
@@ -45,18 +44,13 @@ def gui_migration(
                 )
             ],
             [sg.Button("Interromper")],
-            [
-                sg.Multiline(
-                    size=(50, 10), key="output", disabled=True, echo_stdout_stderr=True
-                )
-            ],
         ],
     )
 
     progressbar = window["progress"]
 
-    success = []
-    failed = []
+    success_list = []
+    failed_list = []
     total_files = len(files_to_move)
     current_file = 1
     for file in files_to_move:
@@ -69,16 +63,12 @@ def gui_migration(
                 break
         current_file += 1
         progressbar.UpdateBar(current_file, total_files)
-        move_file_result = migrate_file(file, destination, copy)
-        if not move_file_result[0]:
-            print("Falha ao mover %s\n" % move_file_result[1])
-            failed.append(move_file_result[1])
-        else:
-            print("Movido com sucesso %s\n" % move_file_result[1])
-            success.append(move_file_result[1])
-        sleep(0.1)
-        continue
-    return success, failed
+        migration_success = migrate_file(file, destination, copy)
+        if migration_success:
+            success_list.append(file.name)
+            continue
+        failed_list.append(file.name)
+    return success_list, failed_list
 
 
 def start_migration(args: Args, is_gui: bool) -> list[str] | bool:
