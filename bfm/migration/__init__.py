@@ -90,8 +90,8 @@ def start_migration(args: Args, is_gui: bool) -> list[str] | bool:
         return False
 
     if not is_gui:
-        migration_results = cli_migration(files_to_move, args.destination)
+        migration_results = cli_migration(files_to_move, args.destination, args.copy)
         return migration_results[1] if len(migration_results[1]) > 0 else True
 
-    migration_results = gui_migration(files_to_move, args.destination)
+    migration_results = gui_migration(files_to_move, args.destination, args.copy)
     return migration_results[1] if len(migration_results[1]) > 0 else True

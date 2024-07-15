@@ -212,6 +212,7 @@ def draw():
                 continue
 
             return Args(
+                copy=values["OP_TYPE_COPY"],
                 source=values["INPUT_FOLDER"],
                 destination=values["OUTPUT_FOLDER"],
                 prefix=values[0],

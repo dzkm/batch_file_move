@@ -4,6 +4,7 @@ from enum import Enum
 
 @dataclass
 class Args:
+    copy: bool
     source: str
     destination: str
     prefix: str

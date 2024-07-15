@@ -11,7 +11,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         prog=__package__ or "app",
         description="Simple application that moves files",
     )
-
+    parser.add_argument(
+        "--copy",
+        "-c",
+        action="store_true",
+        help="Copy files instead of moving",
+        required=False,
+    )
     parser.add_argument(
         "--source",
         "-s",
