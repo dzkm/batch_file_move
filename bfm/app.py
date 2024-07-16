@@ -1,6 +1,7 @@
 from common import Args
 import gui
 import migration
+import args_validator as av
 import FreeSimpleGUI as sg
 
 IS_GUI_MODE = True
@@ -8,17 +9,21 @@ IS_GUI_MODE = True
 
 def main(args: Args) -> int:
     global IS_GUI_MODE
-    print(args)
+
     # Checks if any argument has been passed to the program.
     for key, value in vars(args).items():
         if value:
             IS_GUI_MODE = False  # If any argument, disable GUI and makes user use CLI.
-        if not IS_GUI_MODE and not value:
-            print("Argumento %s não pode ser vazio." % key)
-            return 1
+            break
 
     if IS_GUI_MODE:
         args = gui.draw()
+    if not IS_GUI_MODE:
+        try:
+            av.validate_all(args)
+        except ValueError as e:
+            print(str(e))
+            return 1
 
     migration_result = migration.start_migration(args, IS_GUI_MODE)
 

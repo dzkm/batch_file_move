@@ -1,6 +1,7 @@
 import FreeSimpleGUI as sg
 import os
 from common import Args
+import args_validator as av
 
 USER_HOME_PATH = os.path.expanduser("~")
 
@@ -198,20 +199,7 @@ def draw():
             window["TXT_INPUT"].update(value=values["BROWSER_INPUT_TXT"])
 
         if event == "OK":
-            if not os.path.isdir(values["INPUT_FOLDER"]):
-                sg.popup_ok("Pasta de origem inválida", title="Erro")
-                continue
-            if not os.path.isdir(values["OUTPUT_FOLDER"]):
-                sg.popup_ok("Pasta de destino inválida", title="Erro")
-                continue
-            if values["INPUT_TYPE_TXT"] and not os.path.isfile(values["TXT_INPUT"]):
-                sg.popup_ok("Arquivo de texto inválido", title="Erro")
-                continue
-            if values["INPUT_TYPE_COMMA"] and not values["COMMA_LIST_INPUT"]:
-                sg.popup_ok("Lista está vazia", title="Erro")
-                continue
-
-            return Args(
+            args = Args(
                 copy=values["OP_TYPE_COPY"],
                 source=values["INPUT_FOLDER"],
                 destination=values["OUTPUT_FOLDER"],
@@ -219,3 +207,10 @@ def draw():
                 txt=values["TXT_INPUT"],
                 raw=values["COMMA_LIST_INPUT"].split(","),
             )
+            try:
+                av.validate_all(args)
+            except ValueError as e:
+                sg.popup_ok(str(e), title="Erro")
+                continue
+
+            return args

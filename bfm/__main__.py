@@ -1,9 +1,17 @@
 import argparse
+import os
+from pathlib import Path
 from typing import Sequence
 
 
 def comma_separated(value: str) -> list[str]:
     return value.split(",")
+
+
+def type_directory(value: str) -> str:
+    if value is not None and os.path.isdir(value):
+        return value
+    raise argparse.ArgumentTypeError("%s is not a valid directory" % value)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -21,7 +29,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument(
         "--source",
         "-s",
-        type=str,
+        type=type_directory,
         required=False,
         help="Source file path",
     )
@@ -29,7 +37,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument(
         "--destination",
         "-d",
-        type=str,
+        type=type_directory,
         required=False,
         help="Destination file path",
     )
@@ -45,7 +53,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     input_list_group.add_argument(
         "--txt",
-        type=argparse.FileType("r"),
+        type=Path,
         required=False,
         help="List of files to move in txt",
     )
