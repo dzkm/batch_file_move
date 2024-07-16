@@ -26,12 +26,13 @@ def main(args: Args) -> int:
             return 1
 
     migration_result = migration.start_migration(args, IS_GUI_MODE)
-
     if migration_result is True:
-        sg.popup_ok(
-            "Migração concluída com sucesso.",
-            title="Migração",
-        )
+        if IS_GUI_MODE:
+            sg.popup_ok(
+                "Migração concluída com sucesso.",
+                title="Migração",
+            )
+        print("Migration completed successfully.")
         return 0
 
     if type(migration_result) is list:
@@ -39,8 +40,9 @@ def main(args: Args) -> int:
         for x in migration_result:
             print(x)
 
-    sg.popup_ok(
-        "Houve erros durante a migração. Verifique o console para mais informações.",
-        title="Migração",
-    )
+    if IS_GUI_MODE:
+        sg.popup_ok(
+            "Houve erros durante a migração. Verifique o console para mais informações.",
+            title="Migração",
+        )
     return 1
