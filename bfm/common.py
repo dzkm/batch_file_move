@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 
 
 @dataclass
@@ -8,7 +9,7 @@ class Args:
     source: str
     destination: str
     prefix: str
-    txt: str
+    txt: Path
     raw: list[str]
 
 

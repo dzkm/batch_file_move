@@ -23,7 +23,14 @@ def validate_file(path: str | Path) -> bool:
 
 
 def validate_raw_list(raw_list: list[str]) -> bool:
-    if raw_list is not None and len(raw_list) > 0:
+    new_list = []
+    for item in raw_list:
+        item = item.strip()
+        if item == "" or item is None:
+            continue
+        new_list.append(item)
+
+    if len(new_list) > 0:
         return True
     raise ValueError("Empty raw list")
 
@@ -39,12 +46,9 @@ def validate_all(args: Args) -> bool:
     validate_folder(args.source)
     validate_folder(args.destination)
     diff_paths(args.source, args.destination)
-    if (args.txt != "" and args.txt is not None) and (
-        args.raw != "" and args.raw is not None
-    ):
-        raise ValueError("Can't use txt and raw list at the same time")
     if args.txt != "":
+        args.txt = Path(args.txt)
         validate_txt_file(args.txt)
-    elif args.raw != "":
+    elif args.raw != [""]:
         validate_raw_list(args.raw)
     return True
