@@ -1,8 +1,8 @@
 from pathlib import Path
 import os
+
 import bfm.file_handler as fm
 from bfm.common import Args
-from alive_progress import alive_bar
 import FreeSimpleGUI as sg
 
 
@@ -20,14 +20,20 @@ def cli_migration(
 ) -> tuple[list[str], list[str]]:
     success_list: list[str] = []
     failed_list: list[str] = []
-    with alive_bar((len(files_to_move))) as bar:
-        for file in files_to_move:
-            bar()
-            migration_success = migrate_file(file, destination, copy)
-            if migration_success:
-                success_list.append(file.name)
+    for file in files_to_move:
+        if fm.file_already_exists(destination + "/" + file.name):
+            answer = input(
+                "File %s already exists in destination, override? (Y/n): " % file.name
+            )
+            if answer.lower() != "y":
+                print("Skipping file %s" % file.name)
+                failed_list.append(file.name)
                 continue
-            failed_list.append(file.name)
+        migration_success = migrate_file(file, destination, copy)
+        if migration_success:
+            success_list.append(file.name)
+            continue
+        failed_list.append(file.name)
     return success_list, failed_list
 
 
@@ -63,6 +69,14 @@ def gui_migration(
                 break
         current_file += 1
         progressbar.UpdateBar(current_file, total_files)
+        if fm.file_already_exists(destination + "/" + file.name):
+            answer = sg.popup_yes_no(
+                "O arquivo %s já existe no destino, deseja sobrescrever?" % file.name,
+                title="Arquivo já existe",
+            )
+            if answer == "no":
+                failed_list.append(file.name)
+                continue
         migration_success = migrate_file(file, destination, copy)
         if migration_success:
             success_list.append(file.name)
