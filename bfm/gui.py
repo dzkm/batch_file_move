@@ -205,7 +205,7 @@ def draw():
                 destination=values["OUTPUT_FOLDER"],
                 prefix=values[0],
                 txt=values["TXT_INPUT"],
-                raw=values["COMMA_LIST_INPUT"].split(","),
+                raw=values["COMMA_LIST_INPUT"].strip().split(","),
             )
             try:
                 av.validate_all(args)

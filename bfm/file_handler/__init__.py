@@ -3,6 +3,10 @@ import shutil
 import os
 
 
+def file_already_exists(file_path: str) -> bool:
+    return os.path.exists(file_path) and not os.path.isdir(file_path)
+
+
 def txt_file_parser(file_path: str) -> list[str]:
     with open(file_path, "r") as file:
         file_lines: list[str] | None = [
