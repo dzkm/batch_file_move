@@ -16,3 +16,9 @@ class Args:
 class LIST_TYPE(Enum):
     TXT_FILE = 1, ".txt"
     INPUT = 2, "input"
+
+
+class OVERRIDE_METHOD(Enum):
+    ASK = 0
+    ALL = 1
+    SKIP = 2

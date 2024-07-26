@@ -1,9 +1,11 @@
 from pathlib import Path
 import os
-
+from time import sleep
 import bfm.file_handler as fm
 from bfm.common import Args
 import FreeSimpleGUI as sg
+from bfm.environment.environment_protocol import Environment
+import tqdm
 
 
 def migrate_file(file: Path, destination: str, copy: bool = False) -> bool:
@@ -16,19 +18,39 @@ def migrate_file(file: Path, destination: str, copy: bool = False) -> bool:
 
 
 def cli_migration(
-    files_to_move: set[Path], destination: str, copy: bool = False
+    environment: Environment,
+    files_to_move: set[Path],
+    destination: str,
+    copy: bool = False,
 ) -> tuple[list[str], list[str]]:
     success_list: list[str] = []
     failed_list: list[str] = []
-    for file in files_to_move:
+    progressbar: tqdm.tqdm | sg.Window = environment.migration_progressbar(
+        len(files_to_move)
+    )
+    for index, file in enumerate(files_to_move):
+        if isinstance(progressbar, tqdm.tqdm):
+            progressbar.update(1)
+        elif isinstance(progressbar, sg.Window):
+            event, _ = progressbar.read(timeout=100)
+            print(event)
+            if event is None:
+                raise SystemExit(254)
+            if event == "Cancel":
+                if environment.ask_confirmation(
+                    "Deseja realmente cancelar a migração?",
+                    "Cancelar migração",
+                ):
+                    raise SystemExit(0)
+            progressbar["PROGRESS"].update(index + 1)
+        else:
+            raise SystemExit(254)
+
         if fm.file_already_exists(destination + "/" + file.name):
-            answer = input(
-                "File %s already exists in destination, override? (Y/n): " % file.name
-            )
-            if answer.lower() != "y":
-                print("Skipping file %s" % file.name)
+            if not environment.ask_override(file.name):
                 failed_list.append(file.name)
                 continue
+
         migration_success = migrate_file(file, destination, copy)
         if migration_success:
             success_list.append(file.name)
@@ -57,7 +79,6 @@ def gui_migration(
 
     success_list = []
     failed_list = []
-    total_files = len(files_to_move)
     current_file = 1
     for file in files_to_move:
         event, values = window.read(timeout=100)
@@ -68,7 +89,7 @@ def gui_migration(
             if cancel_yes_no == "yes":
                 break
         current_file += 1
-        progressbar.UpdateBar(current_file, total_files)
+        progressbar.update(current_file)
         if fm.file_already_exists(destination + "/" + file.name):
             answer = sg.popup_yes_no(
                 "O arquivo %s já existe no destino, deseja sobrescrever?" % file.name,
@@ -85,7 +106,9 @@ def gui_migration(
     return success_list, failed_list
 
 
-def start_migration(args: Args, is_gui: bool) -> list[str] | bool:
+def start_migration(
+    args: Args, is_gui: bool, environment: Environment
+) -> list[str] | bool:
     id_list = args.raw if not os.path.isfile(args.txt) else fm.txt_file_parser(args.txt)
 
     files_to_move = fm.get_files_to_move(args.source, args.prefix, id_list)
@@ -103,9 +126,7 @@ def start_migration(args: Args, is_gui: bool) -> list[str] | bool:
         )
         return False
 
-    if not is_gui:
-        migration_results = cli_migration(files_to_move, args.destination, args.copy)
-        return migration_results[1] if len(migration_results[1]) > 0 else True
-
-    migration_results = gui_migration(files_to_move, args.destination, args.copy)
+    migration_results = cli_migration(
+        environment, files_to_move, args.destination, args.copy
+    )
     return migration_results[1] if len(migration_results[1]) > 0 else True

@@ -3,17 +3,22 @@ import gui
 import migration
 import args_validator as av
 import FreeSimpleGUI as sg
+from bfm.environment.cli_environment import CliEnvironment
+from bfm.environment.gui_environment import GuiEnvironment
+from bfm.environment.environment_protocol import Environment
 
 IS_GUI_MODE = True
 
 
 def main(args: Args) -> int:
     global IS_GUI_MODE
-
+    environment: Environment = GuiEnvironment()
     # Checks if any argument has been passed to the program.
     for key, value in vars(args).items():
         if value:
-            IS_GUI_MODE = False  # If any argument, disable GUI and makes user use CLI.
+            IS_GUI_MODE = False
+            environment = CliEnvironment()
+            # If any argument, disable GUI and makes user use CLI.
             break
 
     if IS_GUI_MODE:
@@ -25,7 +30,7 @@ def main(args: Args) -> int:
             print(str(e))
             return 1
 
-    migration_result = migration.start_migration(args, IS_GUI_MODE)
+    migration_result = migration.start_migration(args, IS_GUI_MODE, environment)
     if migration_result is True:
         if IS_GUI_MODE:
             sg.popup_ok(
